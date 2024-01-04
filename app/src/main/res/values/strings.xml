@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">CompraYVenta</string>
+
+    <string name="item_inicio">Inicio</string>
+    <string name="item_chats">Chats</string>
+    <string name="itmem_vender">Vender</string>
+    <string name="item_mis_anuncios">Mis Anuncios</string>
+    <string name="item_cuenta">Cuenta</string>
+
+    <string name="titulo_rl">Titulo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="ingresar_email">Ingresar con email</string>
+    <string name="ingresar_google">Ingresar con Google</string>
+
+    <string name="txt_login">Login de Usuario</string>
+    <string name="et_email">Email</string>
+    <string name="et_password">Password</string>
+    <string name="btn_ingresar">Ingresar</string>
+    <string name="txt_no_cuenta">No tienes una cuenta?</string>
+    <string name="txt_registrarme">Registrarme</string>
+
+    <string name="txt_registro">Registro de Usuario</string>
+    <string name="et_r_password">Repetir Contraseña</string>
+    <string name="btn_registrar">Registrar</string>
+
+</resources>
