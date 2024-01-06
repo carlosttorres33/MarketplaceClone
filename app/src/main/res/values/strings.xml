@@ -26,5 +26,22 @@
     <string name="btn_registrar">Registrar</string>
 
     <string name="btn_cerrar_sesion">Cerrar Sesion</string>
+    <string name="txt_opciones">Opciones</string>
+    <string name="btn_editar_perfil">Editar Perfil</string>
+
+    <string name="txt_perfil">Perfil de Usuario</string>
+    <string name="txt_info">Información:</string>
+    <string name="txt_nombres">Nombres:</string>
+    <string name="tv_nombres">Nombres Completos</string>
+    <string name="txt_email">Email:</string>
+    <string name="tv_email">Email@dominio.com</string>
+    <string name="txt_nacimiento">Fecha de nacimiento:</string>
+    <string name="tv_nacmimento">dd/mm/aaaa</string>
+    <string name="txt_miembro">Miembro desde:</string>
+    <string name="tv_miembro">dd/mm/aaaa</string>
+    <string name="txt_telefono">Teléfono:</string>
+    <string name="tv_telefono">999999999</string>
+    <string name="txt_estado_cuenta">Estado de cuenta:</string>
+    <string name="tv_estado_cuenta">No verificado</string>
 
 </resources>
