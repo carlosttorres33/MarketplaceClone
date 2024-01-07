@@ -44,4 +44,11 @@
     <string name="txt_estado_cuenta">Estado de cuenta:</string>
     <string name="tv_estado_cuenta">No verificado</string>
 
+    <string name="txtEditarPerfil">Editar Perfil</string>
+    <string name="etNombres">Nombres Completos</string>
+    <string name="etFechaNac">Fecha de Nacimiento</string>
+    <string name="codTel"> +00 </string>
+    <string name="etTelefono">Telefono</string>
+    <string name="btnActualizar">Actualizar</string>
+
 </resources>
