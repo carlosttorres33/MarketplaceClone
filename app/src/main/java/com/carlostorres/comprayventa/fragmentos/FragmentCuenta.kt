@@ -85,7 +85,7 @@ class FragmentCuenta : Fragment() {
 
                     //Seter de info
                     binding.tvEmail.text = email
-                    binding.tvEmail.text = nombres
+                    binding.tvNombres.text = nombres
                     binding.tvNacmimento.text = fNacimiento
                     binding.tvTelefono.text = codigoTelefonoCompleto
                     binding.tvMiembro.text = formatoTiempo

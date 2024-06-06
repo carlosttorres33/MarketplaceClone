@@ -47,6 +47,56 @@ class EditarPerfil : AppCompatActivity() {
             select_img_de()
         }
 
+        binding.btnActualizar.setOnClickListener {
+            validarInfo()
+        }
+
+    }
+
+    private var nombres = ""
+    private var f_nac = ""
+    private var codigo = ""
+    private var telefono = ""
+
+    private fun validarInfo() {
+        nombres = binding.etNombres.text.toString().trim()
+        f_nac = binding.etFechaNac.text.toString().trim()
+        codigo = binding.codeSelector.selectedCountryCode
+        telefono = binding.etTelefono.text.toString().trim()
+
+        if (nombres.isEmpty()){
+            Toast.makeText(this, "Ingrese sus Nombres", Toast.LENGTH_SHORT).show()
+        }else if (f_nac.isEmpty()){
+            Toast.makeText(this, "Ingrese su Fecha de nacimiento", Toast.LENGTH_SHORT).show()
+        }else if (codigo.isEmpty()){
+            Toast.makeText(this, "Selecciona un codigo", Toast.LENGTH_SHORT).show()
+        }else if (telefono.isEmpty()){
+            Toast.makeText(this, "Ingresa tu telefono", Toast.LENGTH_SHORT).show()
+        }else{
+            actualizarInfo()
+        }
+
+    }
+
+    private fun actualizarInfo() {
+        progressDialog.setMessage("Actualizando Info")
+
+        val hashMap : HashMap<String, Any> = HashMap()
+
+        hashMap["nombres"] = "${nombres}"
+        hashMap["fecha_nac"] = f_nac
+        hashMap["codigoTelefono"] = codigo
+        hashMap["telefono"] = telefono
+
+        val ref = FirebaseDatabase.getInstance().getReference("Usuarios")
+        ref.child(firebaseAuth.uid!!)
+            .updateChildren(hashMap)
+            .addOnSuccessListener {
+                progressDialog.dismiss()
+                Toast.makeText(this, "Info Actualizada", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener {
+                Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun cargarInfo() {
