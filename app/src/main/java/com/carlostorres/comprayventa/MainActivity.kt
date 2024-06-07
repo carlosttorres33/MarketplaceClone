@@ -3,6 +3,7 @@ package com.carlostorres.comprayventa
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.carlostorres.comprayventa.anuncios.CrearAnuncioActivity
 import com.carlostorres.comprayventa.databinding.ActivityMainBinding
 import com.carlostorres.comprayventa.fragmentos.FragmentChats
 import com.carlostorres.comprayventa.fragmentos.FragmentCuenta
@@ -49,6 +50,10 @@ class MainActivity : AppCompatActivity() {
 
             }
 
+        }
+
+        binding.floatingAb.setOnClickListener {
+            startActivity(Intent(this, CrearAnuncioActivity::class.java))
         }
 
     }

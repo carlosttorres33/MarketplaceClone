@@ -52,4 +52,13 @@
     <string name="etTelefono">Telefono</string>
     <string name="btnActualizar">Actualizar</string>
 
+    <string name="et_marca">Nombre de la marca</string>
+    <string name="categoria">Categoria</string>
+    <string name="condicion">Condicion</string>
+    <string name="locacion">Locacion</string>
+    <string name="precio">Precio</string>
+    <string name="tituli">Titulo</string>
+    <string name="Descripcion">Descripcion</string>
+    <string name="btnCrearAnuncio">Crear anuncio</string>
+
 </resources>
