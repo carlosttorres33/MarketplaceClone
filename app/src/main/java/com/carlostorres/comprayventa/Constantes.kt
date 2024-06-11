@@ -10,6 +10,7 @@ object Constantes {
     const val ANUNCIO_VENDIDO = "Vendido"
 
     val categorias = arrayOf(
+        "Todos",
         "Moviles",
         "Ordenadores/Laptops",
         "Electronica y Electrodomesticos",
@@ -18,13 +19,30 @@ object Constantes {
         "Hogar y Muebles",
         "Belleza y Cuidado personal",
         "Libros",
-        "Deportes"
+        "Deportes",
+        "Juguetes y Figuras",
+        "Mascotas"
     )
 
     val condiciones = arrayOf(
         "Nuevo",
         "Usado",
         "Renovado"
+    )
+
+    val categoriasIcono = arrayOf(
+        R.drawable.ic_categoria_todos,
+        R.drawable.ic_categoria_moviles,
+        R.drawable.ic_categoria_ordenadores,
+        R.drawable.ic_categoria_electrodomesticos,
+        R.drawable.ic_categorias_vehiculos,
+        R.drawable.ic_categorias_consolas,
+        R.drawable.ic_categoria_muebles,
+        R.drawable.ic_categoria_belleza,
+        R.drawable.ic_categoria_libros,
+        R.drawable.ic_categoria_deportes,
+        R.drawable.ic_categoria_juguetes,
+        R.drawable.ic_categoria_mascotas,
     )
 
     fun obtenerTiempoDis() : Long {

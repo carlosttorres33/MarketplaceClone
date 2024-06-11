@@ -1,14 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".fragmentos.FragmentInicio">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="INICIO" />
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="5dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="10dp">
+        
+        <TextView
+            android:id="@+id/tv_locacion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_locacion"
+            android:textStyle="bold"
+            app:drawableStartCompat="@drawable/baseline_location_on_24"
+            android:drawablePadding="10dp"
+            app:drawableEndCompat="@drawable/ic_next_24"/>
+        
+    </com.google.android.material.card.MaterialCardView>
 
-</FrameLayout>
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="5dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="10dp">
+
+        <EditText
+            android:id="@+id/et_buscar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/et_buscar"
+            android:drawablePadding="10dp"
+            android:padding="10dp"
+            app:drawableStartCompat="@drawable/ic_search_24"
+            />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:text="@string/txt_categoria"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextAppearance.MaterialComponents.Overline"
+        android:textStyle="bold"
+        android:layout_marginStart="8dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cat_rv"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        tools:listitem="@layout/item_categoria_inicio"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

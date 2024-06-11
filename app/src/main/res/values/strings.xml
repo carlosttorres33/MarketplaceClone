@@ -66,4 +66,9 @@
     <string name="btn_listo">Listo</string>
     <string name="mi_maps_key">AIzaSyCirLNaIv1WtAqbbLofXqHRk3b_tJ7zDSU</string>
 
+    <string name="tv_locacion">Elija una locacion</string>
+    <string name="et_buscar">Buscar</string>
+    <string name="txt_categoria">Categorias</string>
+    <string name="tv_categoria">Categoria</string>
+
 </resources>

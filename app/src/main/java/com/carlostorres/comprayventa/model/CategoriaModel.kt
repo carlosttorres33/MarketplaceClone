@@ -1,4 +1,7 @@
 package com.carlostorres.comprayventa.model
 
-class CategoriaModel {
+class CategoriaModel(
+    var categoria : String,
+    var ic : Int
+) {
 }
