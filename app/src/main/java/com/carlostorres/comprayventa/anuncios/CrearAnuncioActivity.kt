@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.carlostorres.comprayventa.Constantes
 import com.carlostorres.comprayventa.R
+import com.carlostorres.comprayventa.SeleccionarUbicacionActivity
 import com.carlostorres.comprayventa.adapters.ImagenSeleccionadaAdapter
 import com.carlostorres.comprayventa.databinding.ActivityCrearAnuncioBinding
 import com.carlostorres.comprayventa.model.ImagenSeleccionadaModel
@@ -58,10 +59,27 @@ class CrearAnuncioActivity : AppCompatActivity() {
             mostrarOpciones()
         }
 
+        binding.actvLocacion.setOnClickListener {
+            val i = Intent(this, SeleccionarUbicacionActivity::class.java)
+            seleccionarUbicacion_ARL.launch(i)
+        }
+
         binding.btnCrearAnuncio.setOnClickListener {
             validarDatos()
         }
 
+    }
+
+    private fun limpiarCampos() {
+        imagenesSeleccionadas.clear()
+        imagenSeleccionadaAdapter.notifyDataSetChanged()
+        binding.etMarca.setText("")
+        binding.actvCategoria.setText("")
+        binding.actvCondicion.setText("")
+        binding.actvLocacion.setText("")
+        binding.etPrecio.setText("")
+        binding.etTitulo.setText("")
+        binding.etDescripcion.setText("")
     }
 
     private fun cargarImagenes() {
@@ -112,11 +130,11 @@ class CrearAnuncioActivity : AppCompatActivity() {
 
     private val solicitarPermisoAlmacenamiento = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ){ esConcedido ->
+    ) { esConcedido ->
 
-        if (esConcedido){
+        if (esConcedido) {
             imagenGaleria()
-        }else{
+        } else {
             Toast.makeText(this, "Permisos Denegados", Toast.LENGTH_SHORT).show()
         }
 
@@ -129,8 +147,8 @@ class CrearAnuncioActivity : AppCompatActivity() {
     }
 
     private val resultadoGaleria_ARL =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result->
-            if (result.resultCode == Activity.RESULT_OK){
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
 
                 val data = result.data
                 imagenUri = data!!.data
@@ -147,7 +165,7 @@ class CrearAnuncioActivity : AppCompatActivity() {
 
                 cargarImagenes()
 
-            }else{
+            } else {
                 Toast.makeText(this, "Cancelado", Toast.LENGTH_SHORT).show()
             }
         }
@@ -157,7 +175,8 @@ class CrearAnuncioActivity : AppCompatActivity() {
         contentValues.put(MediaStore.Images.Media.TITLE, "Titulo_Imagen")
         contentValues.put(MediaStore.Images.Media.DESCRIPTION, "Descripcion_Imagen")
 
-        imagenUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+        imagenUri =
+            contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
 
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imagenUri)
@@ -167,8 +186,8 @@ class CrearAnuncioActivity : AppCompatActivity() {
     }
 
     private val resultadoCamara_ARL =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ result ->
-            if (result.resultCode == Activity.RESULT_OK){
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
                 val tiempo = "${Constantes.obtenerTiempoDis()}"
                 val modeloImgSel = ImagenSeleccionadaModel(
                     tiempo,
@@ -178,7 +197,7 @@ class CrearAnuncioActivity : AppCompatActivity() {
                 )
                 imagenesSeleccionadas.add(modeloImgSel)
                 cargarImagenes()
-            }else{
+            } else {
                 Toast.makeText(this, "Cancelado", Toast.LENGTH_SHORT).show()
             }
         }
@@ -209,7 +228,7 @@ class CrearAnuncioActivity : AppCompatActivity() {
     private var latitud = 0.0
     private var longitud = 0.0
 
-    private fun validarDatos(){
+    private fun validarDatos() {
 
         marca = binding.etMarca.text.toString().trim()
         categoria = binding.actvCategoria.text.toString().trim()
@@ -219,25 +238,28 @@ class CrearAnuncioActivity : AppCompatActivity() {
         titulo = binding.etTitulo.text.toString().trim()
         descripcion = binding.etDescripcion.text.toString().trim()
 
-        if (marca.isEmpty()){
+        if (marca.isEmpty()) {
             binding.etMarca.error = "Ingresa Marca"
             binding.etMarca.requestFocus()
-        } else if (categoria.isEmpty()){
+        } else if (categoria.isEmpty()) {
             binding.actvCategoria.error = "Ingresa Categoria"
             binding.actvCategoria.requestFocus()
-        } else if (condicion.isEmpty()){
+        } else if (condicion.isEmpty()) {
             binding.actvCondicion.error = "Ingresa Condicion"
             binding.actvCondicion.requestFocus()
-        } else if (precio.isEmpty()){
+        } else if (precio.isEmpty()) {
             binding.etPrecio.error = "Ingresa Precio"
             binding.etPrecio.requestFocus()
-        } else if (titulo.isEmpty()){
+        } else if (titulo.isEmpty()) {
             binding.etTitulo.error = "Ingresa Direccion"
             binding.etTitulo.requestFocus()
-        } else if (descripcion.isEmpty()){
+        } else if (descripcion.isEmpty()) {
             binding.etDescripcion.error = "Ingresa Descripcion"
             binding.etDescripcion.requestFocus()
-        } else if (imagenUri == null){
+        }else if (direccion.isEmpty()){
+            binding.actvLocacion.error = "Ingresa ubicacion"
+            binding.actvLocacion.requestFocus()
+        }else if (imagenUri == null) {
             Toast.makeText(this, "Agrega al menos una imagen", Toast.LENGTH_SHORT).show()
         } else {
             agregarAnuncio()
@@ -245,6 +267,22 @@ class CrearAnuncioActivity : AppCompatActivity() {
 
 
     }
+
+    private val seleccionarUbicacion_ARL =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { resultado ->
+            if (resultado.resultCode == Activity.RESULT_OK) {
+                val data = resultado.data
+                if (data != null) {
+                    latitud = data.getDoubleExtra("latitud", 0.0)
+                    longitud = data.getDoubleExtra("longitud", 0.0)
+                    direccion = data.getStringExtra("direccion") ?: ""
+
+                    binding.actvLocacion.setText(direccion)
+                }
+            }else{
+                Toast.makeText(this, "Cancelado", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     private fun agregarAnuncio() {
         progressDialog.setMessage("Agregando Anuncio")
@@ -282,7 +320,7 @@ class CrearAnuncioActivity : AppCompatActivity() {
     }
 
     private fun cargarImagenesStorage(keyId: String) {
-        for (i in imagenesSeleccionadas.indices){
+        for (i in imagenesSeleccionadas.indices) {
             val modeloImg = imagenesSeleccionadas[i]
             val nombreImg = modeloImg.id
             val rutaNombreImagen = "Anuncios/$nombreImg"
@@ -293,7 +331,7 @@ class CrearAnuncioActivity : AppCompatActivity() {
                     while (!uriTask.isSuccessful);
                     val urlImgCargada = uriTask.result
 
-                    if (uriTask.isSuccessful){
+                    if (uriTask.isSuccessful) {
                         val hashMap = HashMap<String, Any>()
                         hashMap["id"] = modeloImg.imagenUri.toString()
                         hashMap["imagenUrl"] = urlImgCargada
@@ -301,11 +339,10 @@ class CrearAnuncioActivity : AppCompatActivity() {
                         val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
                         ref.child(keyId).child("Imagenes").child(nombreImg).updateChildren(hashMap)
 
-                        progressDialog.dismiss()
-                        
-                        onBackPressedDispatcher.onBackPressed()
-                        Toast.makeText(this, "Anuncio P ublicado", Toast.LENGTH_SHORT).show()
                     }
+                    progressDialog.dismiss( )
+                    Toast.makeText(this, "Anuncio P ublicado", Toast.LENGTH_SHORT).show()
+                    limpiarCampos()
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()

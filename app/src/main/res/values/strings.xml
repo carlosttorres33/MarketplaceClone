@@ -61,4 +61,9 @@
     <string name="Descripcion">Descripcion</string>
     <string name="btnCrearAnuncio">Crear anuncio</string>
 
+
+    <string name="txt_seleccionar_ubicacion">Seleccione su ubicacion</string>
+    <string name="btn_listo">Listo</string>
+    <string name="mi_maps_key">AIzaSyCirLNaIv1WtAqbbLofXqHRk3b_tJ7zDSU</string>
+
 </resources>
