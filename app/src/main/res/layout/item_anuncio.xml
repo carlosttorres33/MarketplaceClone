@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/imagen_iv"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginEnd="10dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_image"
+            />
+
+        <TextView
+            android:id="@+id/tv_titulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_titulo"
+            android:layout_marginTop="5dp"
+            android:textStyle="bold"
+            android:layout_toEndOf="@id/imagen_iv"
+            android:ellipsize="end"
+            android:maxLines="1"/>
+
+        <TextView
+            android:id="@+id/tv_descripcion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_descripcion"
+            android:maxLines="3"
+            android:layout_toEndOf="@id/imagen_iv"
+            android:layout_below="@id/tv_titulo"/>
+
+        <TextView
+            android:id="@+id/tv_direccion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_direccion"
+            android:layout_toEndOf="@id/imagen_iv"
+            android:layout_below="@id/tv_descripcion"
+            android:ellipsize="end"
+            android:maxLines="1"/>
+
+        <TextView
+            android:id="@+id/tv_condicion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_condicion"
+            android:layout_toEndOf="@id/imagen_iv"
+            android:layout_below="@id/tv_direccion"
+            android:textStyle="bold|italic"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:textSize="13sp"/>
+
+        <TextView
+            android:id="@+id/tv_simbolo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_simbolo"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:textSize="13sp"
+            android:layout_toEndOf="@id/tv_condicion"
+            android:layout_below="@id/tv_direccion"/>
+
+        <TextView
+            android:id="@+id/tv_precio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_precio"
+            android:layout_below="@id/tv_direccion"
+            android:layout_toEndOf="@id/tv_simbolo"
+            android:layout_marginTop="5dp"
+            android:textSize="13sp"/>
+
+        <TextView
+            android:id="@+id/tv_fecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tv_fecha"
+            android:layout_marginEnd="5dp"
+            android:textSize="13sp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/tv_direccion"
+            android:layout_marginTop="5dp"/>
+
+        <ImageButton
+            android:id="@+id/imb_fav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_fav"/>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

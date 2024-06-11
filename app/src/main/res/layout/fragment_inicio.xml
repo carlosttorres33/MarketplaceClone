@@ -62,4 +62,11 @@
         android:layout_marginTop="5dp"
         tools:listitem="@layout/item_categoria_inicio"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_anuncio"
+        android:layout_marginTop="5dp"/>
+
 </androidx.appcompat.widget.LinearLayoutCompat>

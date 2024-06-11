@@ -71,4 +71,13 @@
     <string name="txt_categoria">Categorias</string>
     <string name="tv_categoria">Categoria</string>
 
+
+    <string name="tv_titulo">Nombre del producto</string>
+    <string name="tv_descripcion">Descripcion del producto, se podra vizualizar un maximo de 3 lineas</string>
+    <string name="tv_direccion">Direccion</string>
+    <string name="tv_condicion">Nuevo</string>
+    <string name="tv_simbolo">$</string>
+    <string name="tv_precio">0</string>
+    <string name="tv_fecha">dd/MM/YYY</string>
+
 </resources>
