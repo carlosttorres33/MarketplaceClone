@@ -60,12 +60,48 @@ class AnuncioAdapter : RecyclerView.Adapter<AnuncioAdapter.HolderAnuncio>, Filte
 
         cargarPrimeraImgAnuncio(modeloAnuncio, holder)
 
+        comprobarFav(modeloAnuncio, holder)
+
         holder.tv_titulo.text = titulo
         holder.tv_descricion.text = descripcion
         holder.tv_direccion.text = direccion
         holder.tv_condicion.text = condicion
         holder.tv_precio.text = precio
         holder.tv_fecha.text = formatoFecha
+
+        holder.ib_fav.setOnClickListener {
+            val isFav = modeloAnuncio.favorito
+            if (isFav){
+                Constantes.eliminarAnuncioFav(context, modeloAnuncio.id)
+            } else {
+                Constantes.agregarAnuncioFav(context, modeloAnuncio.id)
+            }
+        }
+
+    }
+
+    private fun comprobarFav(modeloAnuncio: AnuncioModel, holder: HolderAnuncio) {
+        val refDatabase = FirebaseDatabase.getInstance().getReference("Usuarios")
+        refDatabase
+            .child(firebaseAuth.uid!!)
+            .child("Favoritos")
+            .child(modeloAnuncio.id)
+            .addValueEventListener(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val favorito = snapshot.exists()
+                    modeloAnuncio.favorito = favorito
+                    if (favorito){
+                        holder.ib_fav.setImageResource(R.drawable.iv_fav)
+                    }else{
+                        holder.ib_fav.setImageResource(R.drawable.ic_notfav)
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    TODO("Not yet implemented")
+                }
+
+            })
     }
 
     private fun cargarPrimeraImgAnuncio(
