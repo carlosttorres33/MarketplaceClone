@@ -7,6 +7,8 @@ import android.content.SharedPreferences
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -82,6 +84,36 @@ class FragmentInicio : Fragment() {
         binding.tvLocacion.setOnClickListener {
             val intent = Intent(mContext, SeleccionarUbicacionActivity::class.java)
             seleccionarUbicacionARL.launch(intent)
+        }
+
+        binding.etBuscar.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(filtro: CharSequence?, start: Int, before: Int, count: Int) {
+                try {
+                    val consulta = filtro.toString()
+                    adaptadorAnuncio.filter.filter(consulta)
+                }catch (e:Exception){
+
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+
+            }
+
+        })
+
+        binding.ibClean.setOnClickListener {
+            val consulta = binding.etBuscar.text.toString().trim()
+            if (consulta.isNotEmpty()){
+                binding.etBuscar.setText("")
+                Toast.makeText(context, "Clean", Toast.LENGTH_SHORT).show()
+            }else{
+                Toast.makeText(context, "Nada que limpiar", Toast.LENGTH_SHORT).show()
+            }
         }
 
     }
@@ -168,6 +200,7 @@ class FragmentInicio : Fragment() {
                 }
 
                 adaptadorAnuncio = AnuncioAdapter(mContext, anuncioArrayList)
+                println()
                 binding.rvAnuncios.adapter = adaptadorAnuncio
 
             }

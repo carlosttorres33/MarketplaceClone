@@ -4,12 +4,15 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import com.carlostorres.comprayventa.Constantes
 import com.carlostorres.comprayventa.R
 import com.carlostorres.comprayventa.databinding.ItemAnuncioBinding
+import com.carlostorres.comprayventa.filtro.FiltrarAnuncio
 import com.carlostorres.comprayventa.model.AnuncioModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -17,18 +20,21 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 
-class AnuncioAdapter : RecyclerView.Adapter<AnuncioAdapter.HolderAnuncio>{
+class AnuncioAdapter : RecyclerView.Adapter<AnuncioAdapter.HolderAnuncio>, Filterable {
 
     private lateinit var binding : ItemAnuncioBinding
 
     private var context : Context
-    private var anuncioArrayList : ArrayList<AnuncioModel>
+    var anuncioArrayList : ArrayList<AnuncioModel>
     private var firebaseAuth : FirebaseAuth
+    private var filtroLista : ArrayList<AnuncioModel>
+    private var filtro : FiltrarAnuncio? = null
 
     constructor(context: Context, anuncioArrayList: ArrayList<AnuncioModel>) {
         this.context = context
         this.anuncioArrayList = anuncioArrayList
         firebaseAuth = FirebaseAuth.getInstance()
+        this.filtroLista = anuncioArrayList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HolderAnuncio {
@@ -43,7 +49,7 @@ class AnuncioAdapter : RecyclerView.Adapter<AnuncioAdapter.HolderAnuncio>{
     override fun onBindViewHolder(holder: HolderAnuncio, position: Int) {
         val modeloAnuncio = anuncioArrayList[position]
 
-        val titulo = modeloAnuncio.titutlo
+        val titulo = modeloAnuncio.titulo
         val descripcion = modeloAnuncio.descripcion
         val direccion = modeloAnuncio.direccion
         val condicion = modeloAnuncio.condicion
@@ -106,6 +112,14 @@ class AnuncioAdapter : RecyclerView.Adapter<AnuncioAdapter.HolderAnuncio>{
         var tv_fecha = binding.tvFecha
         var ib_fav = binding.imbFav
 
+    }
+
+    override fun getFilter(): Filter {
+        if (filtro == null){
+            filtro = FiltrarAnuncio(this, filtroLista)
+        }
+
+        return filtro as FiltrarAnuncio
     }
 
 

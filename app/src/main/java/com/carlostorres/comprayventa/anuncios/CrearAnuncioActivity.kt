@@ -252,7 +252,7 @@ class CrearAnuncioActivity : AppCompatActivity() {
             binding.etPrecio.error = "Ingresa Precio"
             binding.etPrecio.requestFocus()
         } else if (titulo.isEmpty()) {
-            binding.etTitulo.error = "Ingresa Direccion"
+            binding.etTitulo.error = "Ingresa Titulo"
             binding.etTitulo.requestFocus()
         } else if (descripcion.isEmpty()) {
             binding.etDescripcion.error = "Ingresa Descripcion"
@@ -309,6 +309,7 @@ class CrearAnuncioActivity : AppCompatActivity() {
         hashMap["latitud"] = latitud
         hashMap["longitud"] = longitud
 
+        println()
         ref.child(keyId!!)
             .setValue(hashMap)
             .addOnSuccessListener {

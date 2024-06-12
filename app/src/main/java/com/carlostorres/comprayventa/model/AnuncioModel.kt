@@ -8,7 +8,7 @@ class AnuncioModel{
     var condicion : String = ""
     var direccion : String = ""
     var precio : String = ""
-    var titutlo : String = ""
+    var titulo : String = ""
     var descripcion : String = ""
     var estado : String = ""
     var tiempo : Long = 0
@@ -25,7 +25,7 @@ class AnuncioModel{
         condicion: String,
         direccion: String,
         precio: String,
-        titutlo: String,
+        titulo: String,
         descripcion: String,
         estado: String,
         tiempo: Long,
@@ -40,7 +40,7 @@ class AnuncioModel{
         this.condicion = condicion
         this.direccion = direccion
         this.precio = precio
-        this.titutlo = titutlo
+        this.titulo = titulo
         this.descripcion = descripcion
         this.estado = estado
         this.tiempo = tiempo
