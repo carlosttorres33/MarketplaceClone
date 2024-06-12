@@ -1,14 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragmentos.MisAnunciosPublicadosFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llBuscar"
+        android:weightSum="5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/buscar_cv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="5dp"
+            android:layout_weight="4"
+            app:cardUseCompatPadding="true">
+
+            <EditText
+                android:id="@+id/et_buscar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/et_buscar"
+                app:drawableStartCompat="@drawable/ic_search_24"
+                android:padding="10dp"
+                android:drawablePadding="10dp"/>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageButton
+            android:id="@+id/ib_limpiar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_clean"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:layout_gravity="center"
+            android:padding="10dp"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/misAnuncios_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="MIS ANUNCIOS PUBLICADOS" />
+        android:layout_below="@id/llBuscar"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_anuncio"/>
 
-</FrameLayout>
+</RelativeLayout>

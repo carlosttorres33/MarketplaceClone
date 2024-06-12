@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "376475644157-0n6f48pef8as5s5qhn104341qju5kqeb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.carlostorres.comprayventa",
+            "certificate_hash": "8c772e3443f7ae77132f2ec37787434e26f521fc"
+          }
+        },
+        {
           "client_id": "376475644157-ug04cqrp44jccqq6g1npbbqupfseoqnl.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
