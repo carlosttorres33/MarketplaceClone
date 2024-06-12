@@ -333,15 +333,17 @@ class CrearAnuncioActivity : AppCompatActivity() {
 
                     if (uriTask.isSuccessful) {
                         val hashMap = HashMap<String, Any>()
-                        hashMap["id"] = modeloImg.imagenUri.toString()
+                        hashMap["id"] = modeloImg.id
                         hashMap["imagenUrl"] = urlImgCargada
 
                         val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
+                        Toast.makeText(this, "Previo al array $i", Toast.LENGTH_SHORT).show()
                         ref.child(keyId).child("Imagenes").child(nombreImg).updateChildren(hashMap)
+                        Toast.makeText(this, "Se inserto", Toast.LENGTH_SHORT).show()
 
                     }
-                    progressDialog.dismiss( )
-                    Toast.makeText(this, "Anuncio P ublicado", Toast.LENGTH_SHORT).show()
+                    progressDialog.dismiss()
+                    Toast.makeText(this, "Anuncio Publicado", Toast.LENGTH_SHORT).show()
                     limpiarCampos()
                 }
                 .addOnFailureListener {

@@ -50,8 +50,6 @@ class ImagenSeleccionadaAdapter(
         var item_imagen = binding.itemImagen
         var btn_cerrar = binding.cerrarItem
 
-
     }
-
 
 }

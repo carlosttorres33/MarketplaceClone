@@ -63,6 +63,7 @@
         tools:listitem="@layout/item_categoria_inicio"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_anuncios"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
