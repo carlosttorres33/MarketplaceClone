@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun verFragmentMisAnuncios(){
 
-        binding.tituloRl.text = "Mis Anuncios"
+        binding.tituloRl.text = "Anuncios"
 
         val fragment = FragmentMisAnuncios()
         val fragmentTransition = supportFragmentManager.beginTransaction()

@@ -16,6 +16,8 @@
             android:id="@+id/titulo_rl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="17sp"
             android:layout_centerInParent="true"
             android:text="@string/titulo_rl"
             />
