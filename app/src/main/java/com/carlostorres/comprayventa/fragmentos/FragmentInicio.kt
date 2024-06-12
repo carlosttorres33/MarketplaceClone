@@ -34,7 +34,6 @@ class FragmentInicio : Fragment() {
 
     private companion object{
         private const val MAX_DISTANCIA_MOSTRAR_ANUNCIO = 10
-
     }
 
     private lateinit var mContext : Context
@@ -87,6 +86,11 @@ class FragmentInicio : Fragment() {
 
     }
 
+    /**
+     * Lanza la actividad para seleccionar una ubicacion en el mapa
+     * @author Carlos Toral
+     */
+    //region seleccionarUbicacionARL
     private val seleccionarUbicacionARL = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ){
@@ -112,14 +116,27 @@ class FragmentInicio : Fragment() {
             }
         }
     }
+    //endregion
 
+    /**
+     * Carga la lista de anuncios de la categoria seleccionada
+     * @author Carlos Toral
+     * @param categoria String que indica la categoria de anuncios a buscar
+     */
+    //region cargarAnuncios
     private fun cargarAnuncios(categoria: String) {
+
         anuncioArrayList = ArrayList()
+
         val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
         ref.addValueEventListener(object : ValueEventListener{
+
             override fun onDataChange(snapshot: DataSnapshot) {
+
                 anuncioArrayList.clear()
+
                 for (ds in snapshot.children){
+
                     try {
 
                         val modelAnuncio = ds.getValue(AnuncioModel::class.java)
@@ -130,17 +147,21 @@ class FragmentInicio : Fragment() {
                         )
 
                         if (categoria == "Todos"){
+
                             if (distancia <= MAX_DISTANCIA_MOSTRAR_ANUNCIO){
                                 anuncioArrayList.add(modelAnuncio!!)
+
                             }
                         }else{
+
                             if (modelAnuncio!!.categoria.equals(categoria)){
+
                                 if (distancia <= MAX_DISTANCIA_MOSTRAR_ANUNCIO){
                                     anuncioArrayList.add(modelAnuncio)
+
                                 }
                             }
                         }
-
                     }catch (e: Exception){
 
                     }
@@ -156,8 +177,10 @@ class FragmentInicio : Fragment() {
             }
         })
     }
+    //endregion
 
     private fun calcularDistanciaKM(latitud: Double, longitud: Double): Double {
+
         val puntoPartida = Location(LocationManager.NETWORK_PROVIDER)
         puntoPartida.latitude = actualLatitud
         puntoPartida.longitude = actualLongitud

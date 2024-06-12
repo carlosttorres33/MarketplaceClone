@@ -75,7 +75,7 @@ class AnuncioAdapter : RecyclerView.Adapter<AnuncioAdapter.HolderAnuncio>{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     for (ds in snapshot.children){
                         /***** Agregar el folder correspondiente ****/
-                        val imagenUrl = "${ds.child("").value}"
+                        val imagenUrl = "${ds.child("imagenUrl").value}"
                         try {
                             Glide.with(context)
                                 .load(imagenUrl)
