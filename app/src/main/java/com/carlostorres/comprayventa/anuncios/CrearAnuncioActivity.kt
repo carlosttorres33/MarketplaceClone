@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.widget.ArrayAdapter
 import android.widget.PopupMenu
@@ -256,10 +257,10 @@ class CrearAnuncioActivity : AppCompatActivity() {
         } else if (descripcion.isEmpty()) {
             binding.etDescripcion.error = "Ingresa Descripcion"
             binding.etDescripcion.requestFocus()
-        }else if (direccion.isEmpty()){
+        } else if (direccion.isEmpty()) {
             binding.actvLocacion.error = "Ingresa ubicacion"
             binding.actvLocacion.requestFocus()
-        }else if (imagenUri == null) {
+        } else if (imagenUri == null) {
             Toast.makeText(this, "Agrega al menos una imagen", Toast.LENGTH_SHORT).show()
         } else {
             agregarAnuncio()
@@ -279,7 +280,7 @@ class CrearAnuncioActivity : AppCompatActivity() {
 
                     binding.actvLocacion.setText(direccion)
                 }
-            }else{
+            } else {
                 Toast.makeText(this, "Cancelado", Toast.LENGTH_SHORT).show()
             }
         }
@@ -320,34 +321,54 @@ class CrearAnuncioActivity : AppCompatActivity() {
     }
 
     private fun cargarImagenesStorage(keyId: String) {
+
         for (i in imagenesSeleccionadas.indices) {
+
             val modeloImg = imagenesSeleccionadas[i]
             val nombreImg = modeloImg.id
             val rutaNombreImagen = "Anuncios/$nombreImg"
             val storageRef = FirebaseStorage.getInstance().getReference(rutaNombreImagen)
+
             storageRef.putFile(modeloImg.imagenUri!!)
                 .addOnSuccessListener {
+
                     val uriTask = it.storage.downloadUrl
                     while (!uriTask.isSuccessful);
-                    val urlImgCargada = uriTask.result
+                    val urlImgCargada = uriTask.result.toString()
 
                     if (uriTask.isSuccessful) {
+
                         val hashMap = HashMap<String, Any>()
+
                         hashMap["id"] = modeloImg.id
                         hashMap["imagenUrl"] = urlImgCargada
 
                         val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
+
                         Toast.makeText(this, "Previo al array $i", Toast.LENGTH_SHORT).show()
-                        ref.child(keyId).child("Imagenes").child(nombreImg).updateChildren(hashMap)
-                        Toast.makeText(this, "Se inserto", Toast.LENGTH_SHORT).show()
+
+                        ref.child(keyId)
+                            .child("Imagenes")
+                            .child(nombreImg)
+                            .updateChildren(hashMap)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "Se inserto", Toast.LENGTH_SHORT).show()
+                            }.addOnFailureListener {
+                                Toast.makeText(this, "Error al insertar en DB", Toast.LENGTH_SHORT).show()
+                                Log.d("Database", it.message.toString())
+                            }
+
 
                     }
+
                     progressDialog.dismiss()
                     Toast.makeText(this, "Anuncio Publicado", Toast.LENGTH_SHORT).show()
                     limpiarCampos()
+
                 }
                 .addOnFailureListener {
                     Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
+
                 }
         }
     }

@@ -144,6 +144,7 @@ class EditarPerfil : AppCompatActivity() {
     }
 
     private fun subirImagenStorage(){
+
         progressDialog.setMessage("Subiendo imagen")
         progressDialog.show()
 
