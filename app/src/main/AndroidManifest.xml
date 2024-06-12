@@ -23,6 +23,9 @@
         android:theme="@style/Theme.CompraYVenta"
         tools:targetApi="31">
         <activity
+            android:name=".detalle_anuncio.DetalleAnuncio"
+            android:exported="false" />
+        <activity
             android:name=".SeleccionarUbicacionActivity"
             android:exported="false" />
         <activity

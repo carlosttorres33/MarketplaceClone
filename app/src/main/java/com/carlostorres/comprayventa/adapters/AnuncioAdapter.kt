@@ -1,6 +1,7 @@
 package com.carlostorres.comprayventa.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.carlostorres.comprayventa.Constantes
 import com.carlostorres.comprayventa.R
 import com.carlostorres.comprayventa.databinding.ItemAnuncioBinding
+import com.carlostorres.comprayventa.detalle_anuncio.DetalleAnuncio
 import com.carlostorres.comprayventa.filtro.FiltrarAnuncio
 import com.carlostorres.comprayventa.model.AnuncioModel
 import com.google.firebase.auth.FirebaseAuth
@@ -68,6 +70,12 @@ class AnuncioAdapter : RecyclerView.Adapter<AnuncioAdapter.HolderAnuncio>, Filte
         holder.tv_condicion.text = condicion
         holder.tv_precio.text = precio
         holder.tv_fecha.text = formatoFecha
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, DetalleAnuncio::class.java)
+            intent.putExtra("idAnuncio", modeloAnuncio.id)
+            context.startActivity(intent)
+        }
 
         holder.ib_fav.setOnClickListener {
             val isFav = modeloAnuncio.favorito

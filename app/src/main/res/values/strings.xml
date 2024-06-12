@@ -80,4 +80,19 @@
     <string name="tv_precio">0</string>
     <string name="tv_fecha">dd/MM/YYY</string>
 
+    <string name="txt_detalle_info">Detalle del anuncio</string>
+    <string name="tv_cat">Categoria del anuncio</string>
+    <string name="txt_titulo">Titulo</string>
+    <string name="txt_descripcion">Descripcion</string>
+    <string name="tv_descr">Descripcion del anuncio</string>
+    <string name="txt_direccion">Direccion</string>
+    <string name="txt_descr_vendedor">Descripcion del vendedor</string>
+
+    <string name="btn_mapa">Mapa</string>
+    <string name="btn_llamar">Llamar</string>
+    <string name="btn_sms">SMS</string>
+    <string name="btn_chat">Chat</string>
+    
+    <string name="imagenContadorTv">1/4</string>
+
 </resources>
