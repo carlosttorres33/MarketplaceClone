@@ -81,6 +81,10 @@ class DetalleAnuncio : AppCompatActivity() {
                 }.show()
         }
 
+        binding.btnMapa.setOnClickListener {
+            Constantes.mapaIntent(this, anuncioLatitud, anuncioLongitud)
+        }
+
     }
 
     private fun cargarInfoAnuncio(){

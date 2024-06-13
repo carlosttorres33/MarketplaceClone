@@ -1,6 +1,8 @@
 package com.carlostorres.comprayventa
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.format.DateFormat
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
@@ -105,6 +107,21 @@ object Constantes {
             .addOnFailureListener {  e ->
                 Toast.makeText(context, "${e.message}", Toast.LENGTH_SHORT).show()
             }
+
+    }
+
+    fun mapaIntent(context: Context, latitud : Double, longitud : Double){
+
+        val googleMapIntentUri = Uri.parse("http://maps.google.com/maps?daddr=$latitud,$longitud")
+        val mapIntent = Intent(Intent.ACTION_VIEW, googleMapIntentUri)
+
+        mapIntent.setPackage("com.google.android.apps.maps")
+
+        if (mapIntent.resolveActivity(context.packageManager) != null){
+            context.startActivity(mapIntent)
+        }else{
+            Toast.makeText(context, "No tienes instalado GoogleMaps", Toast.LENGTH_SHORT).show()
+        }
 
     }
 
