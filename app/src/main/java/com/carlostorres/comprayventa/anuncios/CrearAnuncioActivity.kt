@@ -22,7 +22,10 @@ import com.carlostorres.comprayventa.adapters.ImagenSeleccionadaAdapter
 import com.carlostorres.comprayventa.databinding.ActivityCrearAnuncioBinding
 import com.carlostorres.comprayventa.model.ImagenSeleccionadaModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 
 class CrearAnuncioActivity : AppCompatActivity() {
@@ -35,6 +38,9 @@ class CrearAnuncioActivity : AppCompatActivity() {
 
     private lateinit var imagenesSeleccionadas: ArrayList<ImagenSeleccionadaModel>
     private lateinit var imagenSeleccionadaAdapter: ImagenSeleccionadaAdapter
+
+    private var edicion = false
+    private var idAnuncioEditar = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +59,18 @@ class CrearAnuncioActivity : AppCompatActivity() {
         val condicionAdapter = ArrayAdapter(this, R.layout.item_condicion, Constantes.condiciones)
         binding.actvCondicion.setAdapter(condicionAdapter)
 
+        edicion = intent.getBooleanExtra("Edicion", false)
+
+        if (edicion){
+            //Llegamos desde Detalles
+            idAnuncioEditar = intent.getStringExtra("idAnuncio") ?: ""
+            cargarDetalles()
+            binding.btnCrearAnuncio.text = "Actualizar Anuncio"
+        }else{
+            //Llegamos desde Main
+            binding.btnCrearAnuncio.text = "Crear Anuncio"
+        }
+
         imagenesSeleccionadas = ArrayList()
         cargarImagenes()
 
@@ -69,6 +87,67 @@ class CrearAnuncioActivity : AppCompatActivity() {
             validarDatos()
         }
 
+    }
+
+    private fun cargarDetalles() {
+        val refDatabase = FirebaseDatabase.getInstance().getReference("Anuncios")
+        refDatabase
+            .child(idAnuncioEditar)
+            .addListenerForSingleValueEvent(
+                object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+
+                        val marca = "${snapshot.child("marca").value}"
+                        val categoria = "${snapshot.child("categoria").value}"
+                        val condicion = "${snapshot.child("condicion").value}"
+                        val locacion = "${snapshot.child("direccion").value}"
+                        val precio = "${snapshot.child("precio").value}"
+                        val titulo = "${snapshot.child("titulo").value}"
+                        val descripcion = "${snapshot.child("descripcion").value}"
+                        latitud = snapshot.child("latitud").value as Double
+                        longitud = snapshot.child("longitud").value as Double
+
+                        binding.etMarca.setText(marca)
+                        binding.actvCategoria.setText(categoria)
+                        binding.actvCondicion.setText(condicion)
+                        binding.actvLocacion.setText(locacion)
+                        binding.etPrecio.setText(precio)
+                        binding.etTitulo.setText(titulo)
+                        binding.etDescripcion.setText(descripcion)
+
+                        val refImagenes = snapshot.child("Imagenes").ref
+
+                        refImagenes.addListenerForSingleValueEvent(
+                            object : ValueEventListener{
+                                override fun onDataChange(snapshot: DataSnapshot) {
+                                    for (ds in snapshot.children){
+                                        val id = "{${ds.child("id").value}"
+                                        val imagenUrl = "{${ds.child("imagenUrl").value}"
+
+                                        val imagenSeleccionadaModel = ImagenSeleccionadaModel(
+                                            id, null, imagenUrl, true
+                                        )
+                                        imagenesSeleccionadas.add(imagenSeleccionadaModel)
+                                    }
+
+                                    cargarImagenes()
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                    TODO("Not yet implemented")
+                                }
+
+                            }
+                        )
+
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        TODO("Not yet implemented")
+                    }
+
+                }
+            )
     }
 
     private fun limpiarCampos() {

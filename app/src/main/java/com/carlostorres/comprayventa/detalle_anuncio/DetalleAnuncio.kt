@@ -4,7 +4,9 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.Menu
 import android.view.View
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +16,7 @@ import com.carlostorres.comprayventa.Constantes
 import com.carlostorres.comprayventa.MainActivity
 import com.carlostorres.comprayventa.R
 import com.carlostorres.comprayventa.adapters.ImgSliderAdapter
+import com.carlostorres.comprayventa.anuncios.CrearAnuncioActivity
 import com.carlostorres.comprayventa.databinding.ActivityDetalleAnuncioBinding
 import com.carlostorres.comprayventa.model.AnuncioModel
 import com.carlostorres.comprayventa.model.ImgSliderModel
@@ -27,25 +30,19 @@ import com.google.firebase.database.ValueEventListener
 class DetalleAnuncio : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetalleAnuncioBinding
-
     private lateinit var firebaseAuth: FirebaseAuth
     private var idAnuncio = ""
-
     private var anuncioLatitud = 0.0
     private var anuncioLongitud = 0.0
-
     private var uidVendedor = ""
     private var telVendedor = ""
-
     private var favorito = false
-
     private lateinit var imagenSliderArrayList: ArrayList<ImgSliderModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         binding = ActivityDetalleAnuncioBinding.inflate(layoutInflater)
-
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
@@ -53,79 +50,149 @@ class DetalleAnuncio : AppCompatActivity() {
         idAnuncio = intent.getStringExtra("idAnuncio").toString()
 
         binding.ibFav.setOnClickListener {
+
             if (favorito) {
+
                 Constantes.eliminarAnuncioFav(this, idAnuncio)
+
             } else {
+
                 Constantes.agregarAnuncioFav(this, idAnuncio)
+
             }
         }
 
         binding.ibRegresar.setOnClickListener {
+
             onBackPressedDispatcher.onBackPressed()
+
         }
 
         comprobarAnuncioFav()
         cargarInfoAnuncio()
         cargarImgsAnuncio()
 
+        binding.ibEditar.setOnClickListener {
+            opcionesDialog()
+        }
+
         binding.ibEliminar.setOnClickListener {
+
             val mAlertDialog = MaterialAlertDialogBuilder(this)
+
             mAlertDialog.setTitle("Eliminar anuncio")
                 .setMessage("Seguro?")
                 .setPositiveButton("Eliminar") { dialog, which ->
+
                     eliminarAnuncio()
-                }
-                .setNegativeButton("Cancelar") { dialog, which ->
+
+                }.setNegativeButton("Cancelar") { dialog, which ->
+
                     dialog.dismiss()
+
                 }.show()
+
         }
 
         binding.btnMapa.setOnClickListener {
+
             Constantes.mapaIntent(this, anuncioLatitud, anuncioLongitud)
+
         }
 
         binding.btnLlamar.setOnClickListener {
+
             if (ContextCompat.checkSelfPermission(
                     applicationContext,
                     android.Manifest.permission.CALL_PHONE
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
+
                 val numeroTel = telVendedor
+
                 if (numeroTel.isEmpty()) {
+
                     Toast.makeText(
                         this@DetalleAnuncio,
                         "El vendedor no tiene numero",
                         Toast.LENGTH_SHORT
                     ).show()
+
                 } else {
+
                     Constantes.llamarIntent(this, numeroTel)
+
                 }
             } else {
+
                 permisoLlamada.launch(android.Manifest.permission.CALL_PHONE)
+
             }
         }
 
         binding.btnSms.setOnClickListener {
+
             if (ContextCompat.checkSelfPermission(
                     applicationContext,
                     Manifest.permission.SEND_SMS
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
+
                 val numTel = telVendedor
+
                 if (numTel.isEmpty()) {
+
                     Toast.makeText(
                         this@DetalleAnuncio,
                         "El vendedor no tiene numero",
                         Toast.LENGTH_SHORT
                     ).show()
-                } else {
-                    Constantes.smsIntent(this, telVendedor)
-                }
 
+                } else {
+
+                    Constantes.smsIntent(this, telVendedor)
+
+                }
             } else {
+
                 permisoSms.launch(Manifest.permission.SEND_SMS)
+
             }
         }
+    }
+
+    private fun opcionesDialog() {
+
+        val popupMenu = PopupMenu(this, binding.ibEditar)
+
+        popupMenu.menu.add(Menu.NONE, 0,0, "Editar")
+        popupMenu.menu.add(Menu.NONE, 1,1, "Marcar como vendido")
+
+        popupMenu.show()
+
+        popupMenu.setOnMenuItemClickListener {  item ->
+
+            val itemId = item.itemId
+
+            if (itemId == 0){
+
+                //Editar
+                val intent = Intent(this, CrearAnuncioActivity::class.java)
+                intent.putExtra("Edicion", true)
+                intent.putExtra("idAnuncio", idAnuncio)
+
+                startActivity(intent)
+
+            }else if(itemId == 1){
+
+                //Vendido
+
+            }
+
+            return@setOnMenuItemClickListener true
+
+        }
+
     }
 
     //region CargarInformacionAnuncio
@@ -195,10 +262,8 @@ class DetalleAnuncio : AppCompatActivity() {
                     override fun onCancelled(error: DatabaseError) {
                         TODO("Not yet implemented")
                     }
-
                 }
             )
-
     }
     //endregion
 

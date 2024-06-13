@@ -53,7 +53,12 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.floatingAb.setOnClickListener {
-            startActivity(Intent(this, CrearAnuncioActivity::class.java))
+
+            val intent = Intent(this, CrearAnuncioActivity::class.java)
+            intent.putExtra("Edicion", false)
+
+            startActivity(intent)
+
         }
 
     }
