@@ -94,6 +94,15 @@ class DetalleAnuncio : AppCompatActivity() {
             }
         }
 
+        binding.btnSms.setOnClickListener {
+            val numTel = telVendedor
+            if (numTel.isEmpty()){
+                Toast.makeText(this@DetalleAnuncio, "El vendedor no tiene numero", Toast.LENGTH_SHORT).show()
+            }else{
+                Constantes.smsIntent(this, telVendedor)
+            }
+        }
+
     }
 
     private fun cargarInfoAnuncio(){
