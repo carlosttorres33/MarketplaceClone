@@ -87,6 +87,8 @@
     <string name="tv_descr">Descripcion del anuncio</string>
     <string name="txt_direccion">Direccion</string>
     <string name="txt_descr_vendedor">Descripcion del vendedor</string>
+    <string name="tv_Estado">Disponible</string>
+    <string name="txt_estado">Estado</string>
 
     <string name="btn_mapa">Mapa</string>
     <string name="btn_llamar">Llamar</string>
@@ -96,6 +98,7 @@
     <string name="txt_eliminar">Segurx?</string>
     <string name="btn_si">Si</string>
     <string name="btn_no">Cancelar</string>
+    <string name="txt_marcar_vendido">Marcar como vendido?</string>
 
     <string name="imagenContadorTv">1/4</string>
 

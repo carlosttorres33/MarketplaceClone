@@ -1,8 +1,10 @@
 package com.carlostorres.comprayventa.detalle_anuncio
 
 import android.Manifest
+import android.app.Dialog
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
@@ -20,6 +22,7 @@ import com.carlostorres.comprayventa.anuncios.CrearAnuncioActivity
 import com.carlostorres.comprayventa.databinding.ActivityDetalleAnuncioBinding
 import com.carlostorres.comprayventa.model.AnuncioModel
 import com.carlostorres.comprayventa.model.ImgSliderModel
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
@@ -184,9 +187,8 @@ class DetalleAnuncio : AppCompatActivity() {
                 startActivity(intent)
 
             }else if(itemId == 1){
-
                 //Vendido
-
+                dialogMarcarVendido()
             }
 
             return@setOnMenuItemClickListener true
@@ -215,6 +217,7 @@ class DetalleAnuncio : AppCompatActivity() {
                             val condicion = modeloAnuncio.condicion
                             val categoria = modeloAnuncio.categoria
                             val precio = modeloAnuncio.precio
+                            val estado = modeloAnuncio.estado
                             anuncioLatitud = modeloAnuncio.latitud
                             anuncioLongitud = modeloAnuncio.longitud
                             val tiempo = modeloAnuncio.tiempo
@@ -250,6 +253,13 @@ class DetalleAnuncio : AppCompatActivity() {
                             binding.tvCat.text = categoria
                             binding.tvPrecio.text = precio
                             binding.tvFecha.text = formatoFecha
+                            binding.tvEstado.text = estado
+
+                            if (estado.equals("Disponible")){
+                                binding.tvEstado.setTextColor(Color.BLUE)
+                            }else{
+                                binding.tvEstado.setTextColor(Color.RED)
+                            }
 
                             //Info Vendedor
                             cargarInfoVendedor()
@@ -266,6 +276,44 @@ class DetalleAnuncio : AppCompatActivity() {
             )
     }
     //endregion
+
+    private fun marcarAnuncioVendido(){
+
+        val hashMap = HashMap<String, Any>()
+        hashMap["estado"] = Constantes.ANUNCIO_VENDIDO
+        
+        val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
+        ref.child(idAnuncio)
+            .updateChildren(hashMap)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Anuncio marcado como vendido", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener {
+                Toast.makeText(this, "Error al marcar como vendido ${it.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun dialogMarcarVendido(){
+        val btnSi : MaterialButton
+        val btnNo : MaterialButton
+        val dialog = Dialog(this)
+
+        dialog.setContentView(R.layout.marcar_vendido_dialog)
+
+        btnSi = dialog.findViewById(R.id.btn_si)
+        btnNo = dialog.findViewById(R.id.btn_no)
+
+        btnSi.setOnClickListener {
+            marcarAnuncioVendido()
+            dialog.dismiss()
+        }
+
+        btnNo.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+        dialog.setCanceledOnTouchOutside(false)
+    }
 
     //region cargarInfoVendedor
     private fun cargarInfoVendedor() {
