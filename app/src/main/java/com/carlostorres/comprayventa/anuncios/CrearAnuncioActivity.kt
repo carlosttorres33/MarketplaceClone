@@ -61,12 +61,12 @@ class CrearAnuncioActivity : AppCompatActivity() {
 
         edicion = intent.getBooleanExtra("Edicion", false)
 
-        if (edicion){
+        if (edicion) {
             //Llegamos desde Detalles
             idAnuncioEditar = intent.getStringExtra("idAnuncio") ?: ""
             cargarDetalles()
             binding.btnCrearAnuncio.text = "Actualizar Anuncio"
-        }else{
+        } else {
             //Llegamos desde Main
             binding.btnCrearAnuncio.text = "Crear Anuncio"
         }
@@ -94,7 +94,7 @@ class CrearAnuncioActivity : AppCompatActivity() {
         refDatabase
             .child(idAnuncioEditar)
             .addListenerForSingleValueEvent(
-                object : ValueEventListener{
+                object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
 
                         val marca = "${snapshot.child("marca").value}"
@@ -118,14 +118,17 @@ class CrearAnuncioActivity : AppCompatActivity() {
                         val refImagenes = snapshot.child("Imagenes").ref
 
                         refImagenes.addListenerForSingleValueEvent(
-                            object : ValueEventListener{
+                            object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
-                                    for (ds in snapshot.children){
-                                        val id = "{${ds.child("id").value}"
-                                        val imagenUrl = "{${ds.child("imagenUrl").value}"
+                                    for (ds in snapshot.children) {
+                                        val id = "${ds.child("id").value}"
+                                        val imagenUrl = "${ds.child("imagenUrl").value}"
 
                                         val imagenSeleccionadaModel = ImagenSeleccionadaModel(
-                                            id, null, imagenUrl, true
+                                            id = id,
+                                            imagenUri = null,
+                                            imagenUrl = imagenUrl,
+                                            deInternet = true
                                         )
                                         imagenesSeleccionadas.add(imagenSeleccionadaModel)
                                     }
@@ -164,6 +167,7 @@ class CrearAnuncioActivity : AppCompatActivity() {
 
     private fun cargarImagenes() {
         imagenSeleccionadaAdapter = ImagenSeleccionadaAdapter(this, imagenesSeleccionadas)
+        println()
         binding.rvImagenes.adapter = imagenSeleccionadaAdapter
     }
 
@@ -342,9 +346,43 @@ class CrearAnuncioActivity : AppCompatActivity() {
         } else if (imagenUri == null) {
             Toast.makeText(this, "Agrega al menos una imagen", Toast.LENGTH_SHORT).show()
         } else {
-            agregarAnuncio()
+            if (edicion) {
+                actualizarAnuncio()
+            } else {
+                agregarAnuncio()
+            }
         }
 
+
+    }
+
+    private fun actualizarAnuncio() {
+
+        progressDialog.setMessage("Actualizando anuncio")
+        progressDialog.show()
+
+        val hashMap = HashMap<String, Any>()
+        hashMap["marca"] = marca
+        hashMap["categoria"] = categoria
+        hashMap["condicion"] = condicion
+        hashMap["direccion"] = direccion
+        hashMap["precio"] = precio
+        hashMap["titulo"] = titulo
+        hashMap["descripcion"] = descripcion
+        hashMap["latitud"] = latitud
+        hashMap["longitud"] = longitud
+
+        val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
+        ref
+            .child(idAnuncioEditar)
+            .updateChildren(hashMap)
+            .addOnSuccessListener {
+                cargarImagenesStorage(idAnuncioEditar)
+                progressDialog.dismiss()
+            }.addOnFailureListener { e ->
+                Toast.makeText(this, "Error en la actualizacion ${e.message}", Toast.LENGTH_SHORT)
+                    .show()
+            }
 
     }
 
@@ -405,51 +443,61 @@ class CrearAnuncioActivity : AppCompatActivity() {
         for (i in imagenesSeleccionadas.indices) {
 
             val modeloImg = imagenesSeleccionadas[i]
-            val nombreImg = modeloImg.id
-            val rutaNombreImagen = "Anuncios/$nombreImg"
-            val storageRef = FirebaseStorage.getInstance().getReference(rutaNombreImagen)
 
-            storageRef.putFile(modeloImg.imagenUri!!)
-                .addOnSuccessListener {
+            if (!modeloImg.deInternet) {
+                val nombreImg = modeloImg.id
+                val rutaNombreImagen = "Anuncios/$nombreImg"
+                val storageRef = FirebaseStorage.getInstance().getReference(rutaNombreImagen)
 
-                    val uriTask = it.storage.downloadUrl
-                    while (!uriTask.isSuccessful);
-                    val urlImgCargada = uriTask.result.toString()
+                storageRef.putFile(modeloImg.imagenUri!!)
+                    .addOnSuccessListener {
 
-                    if (uriTask.isSuccessful) {
+                        val uriTask = it.storage.downloadUrl
+                        while (!uriTask.isSuccessful);
+                        val urlImgCargada = uriTask.result.toString()
 
-                        val hashMap = HashMap<String, Any>()
+                        if (uriTask.isSuccessful) {
 
-                        hashMap["id"] = modeloImg.id
-                        hashMap["imagenUrl"] = urlImgCargada
+                            val hashMap = HashMap<String, Any>()
 
-                        val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
+                            hashMap["id"] = modeloImg.id
+                            hashMap["imagenUrl"] = urlImgCargada
 
-                        Toast.makeText(this, "Previo al array $i", Toast.LENGTH_SHORT).show()
+                            val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
 
-                        ref.child(keyId)
-                            .child("Imagenes")
-                            .child(nombreImg)
-                            .updateChildren(hashMap)
-                            .addOnSuccessListener {
-                                Toast.makeText(this, "Se inserto", Toast.LENGTH_SHORT).show()
-                            }.addOnFailureListener {
-                                Toast.makeText(this, "Error al insertar en DB", Toast.LENGTH_SHORT).show()
-                                Log.d("Database", it.message.toString())
-                            }
+                            Toast.makeText(this, "Previo al array $i", Toast.LENGTH_SHORT).show()
 
+                            ref.child(keyId)
+                                .child("Imagenes")
+                                .child(nombreImg)
+                                .updateChildren(hashMap)
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "Se inserto", Toast.LENGTH_SHORT).show()
+                                }.addOnFailureListener {
+                                    Toast.makeText(
+                                        this,
+                                        "Error al insertar en DB",
+                                        Toast.LENGTH_SHORT
+                                    )
+                                        .show()
+                                    Log.d("Database", it.message.toString())
+                                }
+
+
+                        }
+
+                        progressDialog.dismiss()
+                        Toast.makeText(this, "Anuncio Publicado", Toast.LENGTH_SHORT).show()
+                        limpiarCampos()
 
                     }
+                    .addOnFailureListener {
+                        Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
 
-                    progressDialog.dismiss()
-                    Toast.makeText(this, "Anuncio Publicado", Toast.LENGTH_SHORT).show()
-                    limpiarCampos()
+                    }
+            }
 
-                }
-                .addOnFailureListener {
-                    Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
 
-                }
         }
     }
 

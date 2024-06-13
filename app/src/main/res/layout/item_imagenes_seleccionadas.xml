@@ -16,6 +16,7 @@
             android:id="@+id/item_imagen"
             android:src="@drawable/item_imagen"
             android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             />
         <ImageView
             android:id="@+id/cerrar_item"

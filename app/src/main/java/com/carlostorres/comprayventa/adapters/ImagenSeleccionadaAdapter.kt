@@ -28,15 +28,35 @@ class ImagenSeleccionadaAdapter(
     }
 
     override fun onBindViewHolder(holder: HolderImagenSeleccionada, position: Int) {
-        val modelo = imagenesSeleccionadas[position]
-        val imagenUri = modelo.imagenUri
-        try {
-            Glide.with(context)
-                .load(imagenUri)
-                .placeholder(R.drawable.item_imagen)
-                .into(holder.item_imagen)
-        }catch (e:Exception){
 
+        val modelo = imagenesSeleccionadas[position]
+
+        if (modelo.deInternet){
+            try {
+
+                val imagenUrl = modelo.imagenUrl
+
+                Glide.with(context)
+                    .load(imagenUrl)
+                    .placeholder(R.drawable.item_imagen)
+                    .into(binding.itemImagen)
+
+            }catch (e:Exception){
+
+            }
+        }else{
+            try {
+
+                val imagenUri = modelo.imagenUri
+
+                Glide.with(context)
+                    .load(imagenUri)
+                    .placeholder(R.drawable.item_imagen)
+                    .into(holder.item_imagen)
+
+            } catch (e:Exception){
+
+            }
         }
 
         holder.btn_cerrar.setOnClickListener {
