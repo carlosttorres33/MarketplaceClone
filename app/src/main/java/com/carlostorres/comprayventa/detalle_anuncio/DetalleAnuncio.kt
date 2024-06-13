@@ -1,20 +1,24 @@
 package com.carlostorres.comprayventa.detalle_anuncio
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.carlostorres.comprayventa.Constantes
+import com.carlostorres.comprayventa.MainActivity
 import com.carlostorres.comprayventa.R
 import com.carlostorres.comprayventa.adapters.ImgSliderAdapter
 import com.carlostorres.comprayventa.databinding.ActivityDetalleAnuncioBinding
 import com.carlostorres.comprayventa.model.AnuncioModel
 import com.carlostorres.comprayventa.model.ImagenSeleccionadaModel
 import com.carlostorres.comprayventa.model.ImgSliderModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -64,6 +68,18 @@ class DetalleAnuncio : AppCompatActivity() {
         comprobarAnuncioFav()
         cargarInfoAnuncio()
         cargarImgsAnuncio()
+
+        binding.ibEliminar.setOnClickListener {
+            val mAlertDialog = MaterialAlertDialogBuilder(this)
+            mAlertDialog.setTitle("Eliminar anuncio")
+                .setMessage("Seguro?")
+                .setPositiveButton("Eliminar"){ dialog, which ->
+                    eliminarAnuncio()
+                }
+                .setNegativeButton("Cancelar"){ dialog, which ->
+                    dialog.dismiss()
+                }.show()
+        }
 
     }
 
@@ -239,6 +255,24 @@ class DetalleAnuncio : AppCompatActivity() {
 
                 }
             )
+
+    }
+
+    private fun eliminarAnuncio(){
+
+        val refDatabase = FirebaseDatabase.getInstance().getReference("Anuncios")
+
+        refDatabase
+            .child(idAnuncio)
+            .removeValue()
+            .addOnSuccessListener {
+                startActivity(Intent(this@DetalleAnuncio, MainActivity::class.java))
+                finishAffinity()
+                Toast.makeText(this, "Anuncio Eliminado", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "${it.message}", Toast.LENGTH_SHORT).show()
+            }
 
     }
 
