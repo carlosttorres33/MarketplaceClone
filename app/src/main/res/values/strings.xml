@@ -93,6 +93,10 @@
     <string name="btn_sms">SMS</string>
     <string name="btn_chat">Chat</string>
     
+    <string name="txt_eliminar">Segurx?</string>
+    <string name="btn_si">Si</string>
+    <string name="btn_no">Cancelar</string>
+
     <string name="imagenContadorTv">1/4</string>
 
 </resources>

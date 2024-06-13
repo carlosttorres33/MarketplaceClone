@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.carlostorres.comprayventa.Constantes
+import com.carlostorres.comprayventa.MainActivity
 import com.carlostorres.comprayventa.R
 import com.carlostorres.comprayventa.SeleccionarUbicacionActivity
 import com.carlostorres.comprayventa.adapters.ImagenSeleccionadaAdapter
@@ -109,7 +110,9 @@ class CrearAnuncioActivity : AppCompatActivity() {
 
                         binding.etMarca.setText(marca)
                         binding.actvCategoria.setText(categoria)
+                        binding.tilCategoria.isEnabled = false
                         binding.actvCondicion.setText(condicion)
+                        binding.actvCondicion.isEnabled = false
                         binding.actvLocacion.setText(locacion)
                         binding.etPrecio.setText(precio)
                         binding.etTitulo.setText(titulo)
@@ -166,7 +169,8 @@ class CrearAnuncioActivity : AppCompatActivity() {
     }
 
     private fun cargarImagenes() {
-        imagenSeleccionadaAdapter = ImagenSeleccionadaAdapter(this, imagenesSeleccionadas)
+        imagenSeleccionadaAdapter =
+            ImagenSeleccionadaAdapter(this, imagenesSeleccionadas, idAnuncioEditar)
         println()
         binding.rvImagenes.adapter = imagenSeleccionadaAdapter
     }
@@ -343,13 +347,15 @@ class CrearAnuncioActivity : AppCompatActivity() {
         } else if (direccion.isEmpty()) {
             binding.actvLocacion.error = "Ingresa ubicacion"
             binding.actvLocacion.requestFocus()
-        } else if (imagenUri == null) {
-            Toast.makeText(this, "Agrega al menos una imagen", Toast.LENGTH_SHORT).show()
         } else {
             if (edicion) {
                 actualizarAnuncio()
             } else {
-                agregarAnuncio()
+                if (imagenUri == null) {
+                    Toast.makeText(this, "Agrega al menos una imagen", Toast.LENGTH_SHORT).show()
+                } else {
+                    agregarAnuncio()
+                }
             }
         }
 
@@ -373,8 +379,8 @@ class CrearAnuncioActivity : AppCompatActivity() {
         hashMap["longitud"] = longitud
 
         val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
-        ref
-            .child(idAnuncioEditar)
+
+        ref.child(idAnuncioEditar)
             .updateChildren(hashMap)
             .addOnSuccessListener {
                 cargarImagenesStorage(idAnuncioEditar)
@@ -486,9 +492,17 @@ class CrearAnuncioActivity : AppCompatActivity() {
 
                         }
 
-                        progressDialog.dismiss()
-                        Toast.makeText(this, "Anuncio Publicado", Toast.LENGTH_SHORT).show()
-                        limpiarCampos()
+                        if (edicion) {
+                            progressDialog.dismiss()
+                            val intent = Intent(this@CrearAnuncioActivity, MainActivity::class.java)
+                            startActivity(intent)
+                            Toast.makeText(this, "Anuncio Actualizado", Toast.LENGTH_SHORT).show()
+                            finishAffinity()
+                        } else {
+                            progressDialog.dismiss()
+                            Toast.makeText(this, "Anuncio Publicado", Toast.LENGTH_SHORT).show()
+                            limpiarCampos()
+                        }
 
                     }
                     .addOnFailureListener {
