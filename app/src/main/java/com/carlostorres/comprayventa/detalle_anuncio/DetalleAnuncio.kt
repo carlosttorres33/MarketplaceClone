@@ -1,14 +1,14 @@
 package com.carlostorres.comprayventa.detalle_anuncio
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.carlostorres.comprayventa.Constantes
 import com.carlostorres.comprayventa.MainActivity
@@ -16,7 +16,6 @@ import com.carlostorres.comprayventa.R
 import com.carlostorres.comprayventa.adapters.ImgSliderAdapter
 import com.carlostorres.comprayventa.databinding.ActivityDetalleAnuncioBinding
 import com.carlostorres.comprayventa.model.AnuncioModel
-import com.carlostorres.comprayventa.model.ImagenSeleccionadaModel
 import com.carlostorres.comprayventa.model.ImgSliderModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
@@ -27,7 +26,7 @@ import com.google.firebase.database.ValueEventListener
 
 class DetalleAnuncio : AppCompatActivity() {
 
-    private lateinit var binding : ActivityDetalleAnuncioBinding
+    private lateinit var binding: ActivityDetalleAnuncioBinding
 
     private lateinit var firebaseAuth: FirebaseAuth
     private var idAnuncio = ""
@@ -54,9 +53,9 @@ class DetalleAnuncio : AppCompatActivity() {
         idAnuncio = intent.getStringExtra("idAnuncio").toString()
 
         binding.ibFav.setOnClickListener {
-            if (favorito){
+            if (favorito) {
                 Constantes.eliminarAnuncioFav(this, idAnuncio)
-            }else{
+            } else {
                 Constantes.agregarAnuncioFav(this, idAnuncio)
             }
         }
@@ -73,10 +72,10 @@ class DetalleAnuncio : AppCompatActivity() {
             val mAlertDialog = MaterialAlertDialogBuilder(this)
             mAlertDialog.setTitle("Eliminar anuncio")
                 .setMessage("Seguro?")
-                .setPositiveButton("Eliminar"){ dialog, which ->
+                .setPositiveButton("Eliminar") { dialog, which ->
                     eliminarAnuncio()
                 }
-                .setNegativeButton("Cancelar"){ dialog, which ->
+                .setNegativeButton("Cancelar") { dialog, which ->
                     dialog.dismiss()
                 }.show()
         }
@@ -86,33 +85,58 @@ class DetalleAnuncio : AppCompatActivity() {
         }
 
         binding.btnLlamar.setOnClickListener {
-            val numeroTel = telVendedor
-            if (numeroTel.isEmpty()){
-                Toast.makeText(this@DetalleAnuncio, "El vendedor no tiene numero", Toast.LENGTH_SHORT).show()
-            }else{
-                Constantes.llamarIntent(this, numeroTel)
+            if (ContextCompat.checkSelfPermission(
+                    applicationContext,
+                    android.Manifest.permission.CALL_PHONE
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                val numeroTel = telVendedor
+                if (numeroTel.isEmpty()) {
+                    Toast.makeText(
+                        this@DetalleAnuncio,
+                        "El vendedor no tiene numero",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Constantes.llamarIntent(this, numeroTel)
+                }
+            } else {
+                permisoLlamada.launch(android.Manifest.permission.CALL_PHONE)
             }
         }
 
         binding.btnSms.setOnClickListener {
-            val numTel = telVendedor
-            if (numTel.isEmpty()){
-                Toast.makeText(this@DetalleAnuncio, "El vendedor no tiene numero", Toast.LENGTH_SHORT).show()
-            }else{
-                Constantes.smsIntent(this, telVendedor)
+            if (ContextCompat.checkSelfPermission(
+                    applicationContext,
+                    Manifest.permission.SEND_SMS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                val numTel = telVendedor
+                if (numTel.isEmpty()) {
+                    Toast.makeText(
+                        this@DetalleAnuncio,
+                        "El vendedor no tiene numero",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Constantes.smsIntent(this, telVendedor)
+                }
+
+            } else {
+                permisoSms.launch(Manifest.permission.SEND_SMS)
             }
         }
-
     }
 
-    private fun cargarInfoAnuncio(){
+    //region CargarInformacionAnuncio
+    private fun cargarInfoAnuncio() {
 
         var refDatabase = FirebaseDatabase.getInstance().getReference("Anuncios")
 
         refDatabase
             .child(idAnuncio)
             .addValueEventListener(
-                object  : ValueEventListener{
+                object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         try {
                             val modeloAnuncio = snapshot.getValue(AnuncioModel::class.java)
@@ -130,7 +154,7 @@ class DetalleAnuncio : AppCompatActivity() {
 
                             val formatoFecha = Constantes.obtenerFecha(tiempo)
 
-                            if (uidVendedor == firebaseAuth.uid){
+                            if (uidVendedor == firebaseAuth.uid) {
 
                                 binding.btnMapa.visibility = View.GONE
                                 binding.btnLlamar.visibility = View.GONE
@@ -140,7 +164,7 @@ class DetalleAnuncio : AppCompatActivity() {
                                 binding.ibEditar.visibility = View.VISIBLE
                                 binding.ibEliminar.visibility = View.VISIBLE
 
-                            }else{
+                            } else {
 
                                 binding.ibEditar.visibility = View.GONE
                                 binding.ibEliminar.visibility = View.GONE
@@ -163,7 +187,7 @@ class DetalleAnuncio : AppCompatActivity() {
                             //Info Vendedor
                             cargarInfoVendedor()
 
-                        }catch (e:Exception){
+                        } catch (e: Exception) {
 
                         }
                     }
@@ -176,7 +200,9 @@ class DetalleAnuncio : AppCompatActivity() {
             )
 
     }
+    //endregion
 
+    //region cargarInfoVendedor
     private fun cargarInfoVendedor() {
 
         val refDatabase = FirebaseDatabase.getInstance().getReference("Usuarios")
@@ -184,7 +210,7 @@ class DetalleAnuncio : AppCompatActivity() {
         refDatabase
             .child(uidVendedor)
             .addValueEventListener(
-                object :ValueEventListener {
+                object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val telefono = "${snapshot.child("telefono").value}"
                         val codTel = "${snapshot.child("codigoTelefono").value}"
@@ -194,7 +220,7 @@ class DetalleAnuncio : AppCompatActivity() {
 
                         val formatoFecha = Constantes.obtenerFecha(tiempoReg)
 
-                        telVendedor =  "$codTel$telefono"
+                        telVendedor = "$codTel$telefono"
 
                         binding.tvNombres.text = nombre
                         binding.tvMiembro.text = formatoFecha
@@ -205,7 +231,7 @@ class DetalleAnuncio : AppCompatActivity() {
                                 .load(imgPerfil)
                                 .placeholder(R.drawable.img_perfil)
                                 .into(binding.imgPerfil)
-                        }catch (e:Exception){
+                        } catch (e: Exception) {
 
                         }
 
@@ -214,13 +240,13 @@ class DetalleAnuncio : AppCompatActivity() {
                     override fun onCancelled(error: DatabaseError) {
                         TODO("Not yet implemented")
                     }
-
                 }
             )
-
     }
+    //endregion
 
-    private fun cargarImgsAnuncio(){
+    //region cargarImagenesDelAnuncio
+    private fun cargarImgsAnuncio() {
 
         imagenSliderArrayList = ArrayList()
 
@@ -230,17 +256,19 @@ class DetalleAnuncio : AppCompatActivity() {
             .child(idAnuncio)
             .child("Imagenes")
             .addValueEventListener(
-                object : ValueEventListener{
+                object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         imagenSliderArrayList.clear()
-                        for (ds in snapshot.children){
+                        for (ds in snapshot.children) {
                             try {
                                 val modeloImagenSlider = ds.getValue(ImgSliderModel::class.java)
                                 imagenSliderArrayList.add(modeloImagenSlider!!)
-                            }catch (e:Exception){}
+                            } catch (e: Exception) {
+                            }
                         }
 
-                        val adapadorImgSlider = ImgSliderAdapter(this@DetalleAnuncio, imagenSliderArrayList)
+                        val adapadorImgSlider =
+                            ImgSliderAdapter(this@DetalleAnuncio, imagenSliderArrayList)
                         binding.imgSliderVp.adapter = adapadorImgSlider
 
                     }
@@ -248,25 +276,25 @@ class DetalleAnuncio : AppCompatActivity() {
                     override fun onCancelled(error: DatabaseError) {
                         TODO("Not yet implemented")
                     }
-
                 }
             )
-
     }
+    //endregion
 
-    private fun comprobarAnuncioFav(){
+    //region comprobarSiAnuncioEsFavorito
+    private fun comprobarAnuncioFav() {
 
         val refDatabase = FirebaseDatabase.getInstance().getReference("Usuarios")
         refDatabase
             .child("${firebaseAuth.uid}").child("Favoritos").child(idAnuncio)
             .addValueEventListener(
-                object : ValueEventListener{
+                object : ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         favorito = snapshot.exists()
 
-                        if (favorito){
+                        if (favorito) {
                             binding.ibFav.setImageResource(R.drawable.iv_fav)
-                        }else{
+                        } else {
                             binding.ibFav.setImageResource(R.drawable.ic_notfav)
                         }
                     }
@@ -274,13 +302,13 @@ class DetalleAnuncio : AppCompatActivity() {
                     override fun onCancelled(error: DatabaseError) {
                         TODO("Not yet implemented")
                     }
-
                 }
             )
-
     }
+    //endregion
 
-    private fun eliminarAnuncio(){
+    //region eliminarAnuncio
+    private fun eliminarAnuncio() {
 
         val refDatabase = FirebaseDatabase.getInstance().getReference("Anuncios")
 
@@ -295,7 +323,54 @@ class DetalleAnuncio : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "${it.message}", Toast.LENGTH_SHORT).show()
             }
-
     }
+    //endregion
+
+    //region permisoLlamada
+    private val permisoLlamada = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { conceder ->
+        if (conceder) {
+            val numeroTel = telVendedor
+            if (numeroTel.isEmpty()) {
+                Toast.makeText(
+                    this@DetalleAnuncio,
+                    "El vendedor no tiene numero",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Constantes.llamarIntent(this, numeroTel)
+            }
+        } else {
+            Toast.makeText(this@DetalleAnuncio, "Permiso Denegado", Toast.LENGTH_SHORT).show()
+        }
+    }
+    //endregion
+
+    //region permisoSMS
+    private val permisoSms =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { conceder ->
+            if (conceder) {
+                val numTel = telVendedor
+                if (numTel.isEmpty()) {
+                    Toast.makeText(
+                        this@DetalleAnuncio,
+                        "El vendedor no tiene numero",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Constantes.smsIntent(this, telVendedor)
+                }
+            } else {
+                Toast.makeText(
+                    this@DetalleAnuncio,
+                    "Permiso Denegado",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    //endregion
 
 }
