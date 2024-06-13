@@ -20,6 +20,7 @@ import com.carlostorres.comprayventa.R
 import com.carlostorres.comprayventa.adapters.ImgSliderAdapter
 import com.carlostorres.comprayventa.anuncios.CrearAnuncioActivity
 import com.carlostorres.comprayventa.databinding.ActivityDetalleAnuncioBinding
+import com.carlostorres.comprayventa.detalle_vendedor.DetalleVendedorActivity
 import com.carlostorres.comprayventa.model.AnuncioModel
 import com.carlostorres.comprayventa.model.ImgSliderModel
 import com.google.android.material.button.MaterialButton
@@ -162,6 +163,13 @@ class DetalleAnuncio : AppCompatActivity() {
 
             }
         }
+
+        binding.ivInfoVendedor.setOnClickListener {
+            val intent = Intent(this, DetalleVendedorActivity::class.java)
+            intent.putExtra("uidVendedor", uidVendedor)
+
+            startActivity(intent)
+        }
     }
 
     private fun opcionesDialog() {
@@ -231,6 +239,9 @@ class DetalleAnuncio : AppCompatActivity() {
                                 binding.btnSms.visibility = View.GONE
                                 binding.btnChat.visibility = View.GONE
 
+                                binding.txtDescrVendedor.visibility = View.GONE
+                                binding.perfilVendedor.visibility = View.GONE
+
                                 binding.ibEditar.visibility = View.VISIBLE
                                 binding.ibEliminar.visibility = View.VISIBLE
 
@@ -243,6 +254,9 @@ class DetalleAnuncio : AppCompatActivity() {
                                 binding.btnLlamar.visibility = View.VISIBLE
                                 binding.btnSms.visibility = View.VISIBLE
                                 binding.btnChat.visibility = View.VISIBLE
+
+                                binding.txtDescrVendedor.visibility = View.VISIBLE
+                                binding.perfilVendedor.visibility = View.VISIBLE
 
                             }
 
