@@ -125,4 +125,13 @@ object Constantes {
 
     }
 
+    fun llamarIntent (context: Context, telefono : String){
+
+        val intent = Intent(Intent.ACTION_CALL)
+        intent.setData(Uri.parse("tel:$telefono"))
+
+        context.startActivity(intent)
+
+    }
+
 }
